@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}View Model{% endblock %}
+
+{% block content %}
+<p>&ensp;</p>
+
+    <p>{{model.filename}}</p>
+    <p>&ensp;</p>
+    <p>{{model.filedescription}}</p>
+    <p>&ensp;</p>
+    <p>&ensp;</p>
+
+    <form action="#" method="post", style="text-align: center;">
+        <p><input type="text", name="parameters", placeholder="Enter the model parameters seperated by commas withought any spaces", size="150" /></p>
+    
+        <p><input type="submit" value="Predict"/></p>
+    </form>
+    
+{% endblock %}

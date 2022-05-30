@@ -1,9 +1,12 @@
 from distutils.log import debug
 from fileinput import filename
-from flask import Flask, redirect, url_for, render_template, request
+from itertools import count
+from flask import Flask, flash, redirect, session, url_for, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
+
 app = Flask(__name__)
+app.secret_key = "Im The Best"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///models.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
@@ -25,13 +28,20 @@ def home():
         name = request.form["mname"]
         description = request.form["mdescription"]
         data = request.files["model"]
+        filename = data.filename
+        new_data = filename.split(".")
+        if new_data[1] == "pickle":
 
-        if models.query.filter_by(filename=name):
-            print("name already used")
+            x = models.query.filter_by(filename=name).count()
+            print(x)
+            if x > 0:
+                flash("This name has already been used!", "warning")
+            else:
+                model = models(filename=name, filedescription=description, data=data.read())
+                db.session.add(model)
+                db.session.commit()
         else:
-            model = models(filename=name, filedescription=description, data=data.read())
-            db.session.add(model)
-            db.session.commit()
+            flash("Model has to be a .pickle file")
 
     return render_template('index.html')
 

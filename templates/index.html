@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}ML Share{% endblock %} 
+{% block title %}Upload Model{% endblock %} 
 
 {% block content %} 
 {% with messages = get_flashed_messages() %}
@@ -10,15 +10,22 @@
     {% endif %}
 {% endwith %}
 
+
 <p>&ensp;</p>
 
+<p>&ensp;</p>
+<fieldset>
+    <legend>Upload Model</legend>
+    <form action="#" method="post", style="text-align: center;", enctype="multipart/form-data">
+        <p><input type="text", name="mname", placeholder="Model Name", required/></p>
+        <p><input type="text", name="mdescription", placeholder="Model Description", size="90", required/></p>
+        <p><input type="file", name="model", required> </p>
+    
+        <p><input type="submit" value="submit"/></p>
+    </form>
+</fieldset>
+<hr>
 
-<form action="#" method="post", style="text-align: center;", enctype="multipart/form-data">
-    <p><input type="text", name="mname", placeholder="Model Name", required/></p>
-    <p><input type="text", name="mdescription", placeholder="Model Description", size="90", required/></p>
-    <p><input type="file", name="model", required> </p>
 
-    <p><input type="submit" value="submit"/></p>
-</form>
 
 {% endblock %} 

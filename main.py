@@ -27,6 +27,7 @@ class models(db.Model):
 @app.route("/", methods=["POST", "GET"])
 def home():
     if request.method == "POST":
+        search = request.form["search"]
         name = request.form["mname"]
         description = request.form["mdescription"]
         data = request.files["model"]
@@ -45,6 +46,8 @@ def home():
                 return redirect(url_for("view_model", name=name))
         else:
             flash("Model has to be a .pickle file")
+
+            
 
     return render_template('index.html')
 
@@ -70,6 +73,14 @@ def view_model(name):
         flash(f"Prediction: {str(m.predict([parameters]))}")
 
     return render_template("viewmodel.html", model=mymodel)
+
+@app.route("/search", methods=["POST", "GET"])
+def search():
+    if request.method == "POST":
+        searched_name = request.form["searchedname"]
+        if models.query.filter_by(filename=searched_name).count() > 0:
+            return redirect(url_for("view_model", name=searched_name))
+    return render_template("search.html")
 
 
 if __name__ == "__main__":

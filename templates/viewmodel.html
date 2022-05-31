@@ -15,5 +15,14 @@
     
         <p><input type="submit" value="Predict"/></p>
     </form>
+    <p>&ensp;</p>
+    <p>&ensp;</p>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <h5>{{ message }}</h5>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
     
 {% endblock %}

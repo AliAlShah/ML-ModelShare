@@ -1,8 +1,10 @@
 from distutils.log import debug
 from fileinput import filename
 from itertools import count
-from flask import Flask, flash, redirect, session, url_for, render_template, request
+from flask import Flask, flash, redirect, session, url_for, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
+from io import BytesIO
+import pickle
 
 
 app = Flask(__name__)
@@ -40,6 +42,7 @@ def home():
                 model = models(filename=name, filedescription=description, data=data.read())
                 db.session.add(model)
                 db.session.commit()
+                return redirect(url_for("view_model", name=name))
         else:
             flash("Model has to be a .pickle file")
 
@@ -62,7 +65,9 @@ def view_model(name):
                 parameters[i] = int(parameters[i])
             except:
                 break
-        print(parameters)
+        x = BytesIO(mymodel.data)
+        m = pickle.load(x)
+        flash(f"Prediction: {str(m.predict([parameters]))}")
 
     return render_template("viewmodel.html", model=mymodel)
 

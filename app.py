@@ -72,15 +72,24 @@ def view_model(name):
     if request.method == "POST":
         parameters = request.form["parameters"]
         parameters = parameters.split(",")
+        should_predict = True
 
         for i in range(0, len(parameters)):
             try:
                 parameters[i] = int(parameters[i])
             except:
+                flash(f"parameter[{i}] was not a number")
+                should_predict = False
                 break
         x = BytesIO(mymodel.data)
         m = pickle.load(x)
-        prediction = m.predict([parameters])
+        prediction = ""
+        if should_predict ==  True:
+            try:
+                prediction = m.predict([parameters])
+            except:
+                flash("Could not predict value, uploaded model may be corupt or you may have missed a parameter")
+
         if mymodel.isround == True:
             prediction = round(prediction[0])
         

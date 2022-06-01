@@ -20,13 +20,15 @@ class models(db.Model):
     data = db.Column(db.LargeBinary)
     instructions = db.Column(db.LargeBinary)
     isround = db.Column(db.String(50))
+    dictionary = db.Column(db.LargeBinary)
 
-    def __init__(self, filename, filedescription, data, instructions, isround):
+    def __init__(self, filename, filedescription, data, instructions, isround, dictionary):
         self.filename = filename
         self.filedescription = filedescription
         self.data = data
         self.instructions = instructions
         self.isround = isround
+        self.dictionary = dictionary
 
 @app.route("/", methods=["POST", "GET"])
 def home():
@@ -37,29 +39,35 @@ def home():
         data = request.files["model"]
         instructions = request.files["minstruct"]
         isround = request.form["mround"]
+        dictionary = request.files["mdictionary"]
 
         instructionsfilename = instructions.filename
         new_instruct = instructionsfilename.split(".")
+        
+        dictionaryfilename = dictionary.filename
+        new_dictionary = dictionaryfilename.split(".")
 
         filename = data.filename
         new_data = filename.split(".")
         if new_data[1] == "pickle":
             if new_instruct[1] == "txt":
+                if new_dictionary[1] == "txt":
 
-                if models.query.filter_by(filename=name).count() > 0:
-                    flash("This name has already been used!", "warning")
+                    if models.query.filter_by(filename=name).count() > 0:
+                        flash("This name has already been used!", "warning")
+                    else:
+                        model = models(filename=name, filedescription=description, data=data.read(), instructions=instructions.read(), isround=isround, dictionary=dictionary.read())
+                        db.session.add(model)
+                        db.session.commit()
+                        return redirect(url_for("view_model", name=name))
                 else:
-                    model = models(filename=name, filedescription=description, data=data.read(), instructions=instructions.read(), isround=isround)
-                    db.session.add(model)
-                    db.session.commit()
-                    return redirect(url_for("view_model", name=name))
+                    flash("Dictionary has to be a text file")
             else:
                 flash("Instructions have to be a .txt file")
         else:
             flash("Model has to be a .pickle file")
 
             
-
     return render_template('index.html')
 
 @app.route("/view")
@@ -69,6 +77,18 @@ def view():
 @app.route("/<name>", methods=["POST", "GET"])
 def view_model(name):
     mymodel = models.query.filter_by(filename=name).first()
+
+    text_data = list(BytesIO(mymodel.dictionary).readlines())
+    new_lines = []
+    for i in range(0, len(text_data)):
+        text_data[i] = text_data[i].strip().decode("utf-8")
+        new_lines.append(text_data[i].split(":"))
+    
+    my_dict = {}
+    for n in new_lines:
+        my_dict[n[0]] = int(n[1])
+    
+    print(my_dict)
     
     if request.method == "POST":
         parameters = request.form["parameters"]
@@ -79,22 +99,25 @@ def view_model(name):
             try:
                 parameters[i] = int(parameters[i])
             except:
-                flash(f"parameter[{i}] was not a number")
-                should_predict = False
-                break
+                parameters[i] = my_dict[parameters[i]]
+                
+                    
+                
         x = BytesIO(mymodel.data)
         m = pickle.load(x)
         prediction = ""
+
+        print(should_predict)
         if should_predict ==  True:
             try:
                 prediction = m.predict([parameters])
             except:
                 flash("Could not predict value, uploaded model may be corupt or you may have missed a parameter")
 
-        if mymodel.isround == "on":
-            prediction = round(prediction[0])
-        
-        flash(f"Prediction: {str(prediction)}")
+            if mymodel.isround == "on":
+                prediction = round(prediction[0])
+            
+            flash(f"Prediction: {str(prediction)}")
         
     return render_template("viewmodel.html", model=mymodel)
 

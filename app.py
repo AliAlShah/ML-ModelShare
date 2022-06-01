@@ -19,14 +19,14 @@ class models(db.Model):
     filedescription = db.Column(db.String(200))
     data = db.Column(db.LargeBinary)
     instructions = db.Column(db.LargeBinary)
-    isround = db.Column(db.Boolean)
+    isround = db.Column(db.String(50))
 
     def __init__(self, filename, filedescription, data, instructions, isround):
         self.filename = filename
         self.filedescription = filedescription
         self.data = data
         self.instructions = instructions
-        self.round = isround
+        self.isround = isround
 
 @app.route("/", methods=["POST", "GET"])
 def home():
@@ -70,9 +70,6 @@ def view():
 def view_model(name):
     mymodel = models.query.filter_by(filename=name).first()
     
-    
-    #return send_file(BytesIO(mymodel.instructions), attachment_filename="openwithnotepad")
-    
     if request.method == "POST":
         parameters = request.form["parameters"]
         parameters = parameters.split(",")
@@ -94,7 +91,7 @@ def view_model(name):
             except:
                 flash("Could not predict value, uploaded model may be corupt or you may have missed a parameter")
 
-        if mymodel.isround == True:
+        if mymodel.isround == "on":
             prediction = round(prediction[0])
         
         flash(f"Prediction: {str(prediction)}")

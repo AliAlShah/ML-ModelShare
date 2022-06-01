@@ -1,3 +1,4 @@
+from fileinput import filename
 from flask import Flask, flash, redirect, session, url_for, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -68,7 +69,10 @@ def view():
 @app.route("/<name>", methods=["POST", "GET"])
 def view_model(name):
     mymodel = models.query.filter_by(filename=name).first()
-
+    
+    
+    #return send_file(BytesIO(mymodel.instructions), attachment_filename="openwithnotepad")
+    
     if request.method == "POST":
         parameters = request.form["parameters"]
         parameters = parameters.split(",")
@@ -104,6 +108,11 @@ def search():
         if models.query.filter_by(filename=searched_name).count() > 0:
             return redirect(url_for("view_model", name=searched_name))
     return render_template("search.html")
+
+@app.route("/download/<instructname>")
+def download_instruct(instructname):
+    mymodel = models.query.filter_by(filename=instructname).first()
+    return send_file(BytesIO(mymodel.instructions), attachment_filename="openFileInNotepad")
 
 
 if __name__ == "__main__":

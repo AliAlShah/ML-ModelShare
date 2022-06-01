@@ -4,6 +4,8 @@
 {% block content %}
 <p>&ensp;</p>
 
+<a href = {{ url_for('download_instruct' ,instructname=model.filename) }}>Dowload Instruction Text File</a>
+<p>&ensp;</p>
     <p>{{model.filename}}</p>
     <p>&ensp;</p>
     <p>{{model.filedescription}}</p>

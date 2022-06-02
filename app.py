@@ -21,14 +21,18 @@ class models(db.Model):
     instructions = db.Column(db.LargeBinary)
     isround = db.Column(db.String(50))
     dictionary = db.Column(db.LargeBinary)
+    parameterorder = db.Column(db.String(50))
+    numberofparameters = db.Column(db.Integer())
 
-    def __init__(self, filename, filedescription, data, instructions, isround, dictionary):
+    def __init__(self, filename, filedescription, data, instructions, isround, dictionary, parameterorder, numberofparameters):
         self.filename = filename
         self.filedescription = filedescription
         self.data = data
         self.instructions = instructions
         self.isround = isround
         self.dictionary = dictionary
+        self.parameterorder = parameterorder
+        self.numberofparameters = numberofparameters
 
 @app.route("/", methods=["POST", "GET"])
 def home():
@@ -40,12 +44,15 @@ def home():
         instructions = request.files["minstruct"]
         isround = request.form["mround"]
         dictionary = request.files["mdictionary"]
+        parameterorder = request.form["mparameterorder"]
 
         instructionsfilename = instructions.filename
         new_instruct = instructionsfilename.split(".")
         
         dictionaryfilename = dictionary.filename
         new_dictionary = dictionaryfilename.split(".")
+
+        nparameters = len(parameterorder.split(","))
 
         filename = data.filename
         new_data = filename.split(".")
@@ -56,7 +63,15 @@ def home():
                     if models.query.filter_by(filename=name).count() > 0:
                         flash("This name has already been used!", "warning")
                     else:
-                        model = models(filename=name, filedescription=description, data=data.read(), instructions=instructions.read(), isround=isround, dictionary=dictionary.read())
+                        model = models(
+                            filename=name,
+                             filedescription=description,
+                              data=data.read(),
+                               instructions=instructions.read(),
+                                isround=isround,
+                                 dictionary=dictionary.read(),
+                                  parameterorder=parameterorder,
+                                   numberofparameters=nparameters)
                         db.session.add(model)
                         db.session.commit()
                         return redirect(url_for("view_model", name=name))
@@ -88,18 +103,20 @@ def view_model(name):
     for n in new_lines:
         my_dict[n[0]] = int(n[1])
     
-    print(my_dict)
     
     if request.method == "POST":
-        parameters = request.form["parameters"]
-        parameters = parameters.split(",")
+        inputvalue = []
+        for i in range(mymodel.numberofparameters):
+            form_name = f"{str(i)},"
+            inputvalue.append(request.form[form_name])
+
         should_predict = True
 
-        for i in range(0, len(parameters)):
+        for i in range(0, len(inputvalue)):
             try:
-                parameters[i] = int(parameters[i])
+                inputvalue[i] = int(inputvalue[i])
             except:
-                parameters[i] = my_dict[parameters[i]]
+                inputvalue[i] = my_dict[inputvalue[i]]
                 
                     
                 
@@ -110,7 +127,7 @@ def view_model(name):
         print(should_predict)
         if should_predict ==  True:
             try:
-                prediction = m.predict([parameters])
+                prediction = m.predict([inputvalue])
             except:
                 flash("Could not predict value, uploaded model may be corupt or you may have missed a parameter")
 
@@ -119,7 +136,7 @@ def view_model(name):
             
             flash(f"Prediction: {str(prediction)}")
         
-    return render_template("viewmodel.html", model=mymodel)
+    return render_template("viewmodel.html", model=mymodel, parameters=mymodel.parameterorder.split(","), l=mymodel.numberofparameters)
 
 @app.route("/search", methods=["POST", "GET"])
 def search():

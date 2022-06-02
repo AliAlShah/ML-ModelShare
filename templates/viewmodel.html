@@ -17,8 +17,13 @@
     <p>&ensp;</p>
 
     <form action="#" method="post", style="text-align: center;">
-        <p><input type="text", name="parameters", placeholder="Enter the model parameters seperated by commas withought any spaces", size="150", required /></p>
-    
+        <ol>
+            
+            {% for i in range(0, l) %}
+                <p><input type="text", name={{i}}, placeholder={{parameters[i]}}, size="150", required/></p>
+                
+            {% endfor %}
+        </ol> 
         <p><input type="submit" value="Predict"/></p>
     </form>
     <p>&ensp;</p>

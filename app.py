@@ -101,14 +101,14 @@ def view_model(name):
     
     my_dict = {}
     for n in new_lines:
-        my_dict[n[0]] = int(n[1])
-    
+        my_dict[n[0].lower()] = int(n[1])
+    print(my_dict)
     
     if request.method == "POST":
         inputvalue = []
         for i in range(mymodel.numberofparameters):
             form_name = f"{str(i)},"
-            inputvalue.append(request.form[form_name])
+            inputvalue.append(request.form[form_name].lower())
 
         should_predict = True
 

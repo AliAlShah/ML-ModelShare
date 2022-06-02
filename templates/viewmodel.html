@@ -2,13 +2,17 @@
 {% block title %}View Model{% endblock %}
 
 {% block content %}
+
+<head>
+    <link rel="stylesheet" href="/static/styles/style.css"/>
+    </head>
 <p>&ensp;</p>
 
 <a href = {{ url_for('download_instruct' ,instructname=model.filename) }}>Dowload Instruction Text File</a>
 <p>&ensp;</p>
-    <p>{{model.filename}}</p>
+    <h8>{{model.filename}}</h8>
     <p>&ensp;</p>
-    <p>{{model.filedescription}}</p>
+    <h8>{{model.filedescription}}</h8>
     <p>&ensp;</p>
     <p>&ensp;</p>
 

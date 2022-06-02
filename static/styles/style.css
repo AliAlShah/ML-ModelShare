@@ -1,0 +1,70 @@
+input[type=text] {
+    width: 30%;
+    border: none;
+    padding: 12px 20px;
+    border-bottom: 2px solid lawngreen;
+    margin: 10px 0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background-color: black;
+    transition: width 0.5s ease-in-out;
+    color: grey;
+    
+}
+
+input[type=text]:focus {
+    outline: 2px solid lawngreen;
+    width: 90%;
+}
+ 
+input[type=submit]{
+    background-color: black;
+    color: lawngreen;
+}
+
+input[type=checkbox]{
+    accent-color: lawngreen;
+    
+}
+
+input[type=file]{
+    border-radius: 15px;
+}
+
+.custom-toggler.navbar-toggler {
+    border-color: lawngreen;
+}
+.custom-toggler.navbar-toggler:focus {
+    outline: 1px solid lawngreen;
+}
+
+.custom-toggler .navbar-toggler-icon{
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(124, 252, 0, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+p {
+    color: grey;
+    font-family: "Lucida Console", "Courier New", "monospace";
+}
+h4 {
+    color: lawngreen;
+    
+}
+h5 {
+    color: lawngreen;
+    font-family: "Lucida Console", "Courier New", "monospace";
+    
+}
+h8 {
+    color: lawngreen;
+    font-family: "Lucida Console", "Courier New", "monospace";
+    width: 40%;
+}
+label {
+    color: grey;
+    font-family: "Lucida Console", "Courier New", "monospace";
+    width: 40%;
+}
+a {
+    color: rgb(0, 157, 255);
+}
+

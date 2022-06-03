@@ -1,4 +1,3 @@
-from fileinput import filename
 from flask import Flask, flash, redirect, session, url_for, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -101,25 +100,30 @@ def view_model(name):
     
     my_dict = {}
     for n in new_lines:
-        my_dict[n[0].lower()] = int(n[1])
+        my_dict[f"{n[0].lower()},{n[2]}"] = int(n[1])
     print(my_dict)
     
     if request.method == "POST":
         inputvalue = []
         for i in range(mymodel.numberofparameters):
             form_name = f"{str(i)},"
-            inputvalue.append(request.form[form_name].lower())
-
+            inputvalue.append(f"{request.form[form_name].lower()},{i}".split(","))
+        
+        print(inputvalue)
         should_predict = True
 
         for i in range(0, len(inputvalue)):
             try:
-                inputvalue[i] = int(inputvalue[i])
+                inputvalue[i][0] = int(inputvalue[i][0])
             except:
-                inputvalue[i] = my_dict[inputvalue[i]]
-                
-                    
-                
+                inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
+
+        print(inputvalue)
+        new_input_value = []
+        for i in inputvalue:
+            new_input_value.append(i[0])       
+        print(new_input_value)
+
         x = BytesIO(mymodel.data)
         m = pickle.load(x)
         prediction = ""
@@ -127,7 +131,7 @@ def view_model(name):
         print(should_predict)
         if should_predict ==  True:
             try:
-                prediction = m.predict([inputvalue])
+                prediction = m.predict([new_input_value])
             except:
                 flash("Could not predict value, uploaded model may be corupt or you may have missed a parameter")
 

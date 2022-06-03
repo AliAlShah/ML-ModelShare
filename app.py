@@ -2,6 +2,7 @@ from flask import Flask, flash, redirect, session, url_for, render_template, req
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from io import BytesIO
+import difflib
 import pickle
 
 
@@ -56,8 +57,8 @@ def home():
         filename = data.filename
         new_data = filename.split(".")
         if new_data[1] == "pickle":
-            if new_instruct[1] == "txt":
-                if new_dictionary[1] == "txt":
+            #if new_instruct[1] == "txt":
+                #if new_dictionary[1] == "txt":
 
                     if models.query.filter_by(filename=name).count() > 0:
                         flash("This name has already been used!", "warning")
@@ -74,10 +75,10 @@ def home():
                         db.session.add(model)
                         db.session.commit()
                         return redirect(url_for("view_model", name=name))
-                else:
-                    flash("Dictionary has to be a text file")
-            else:
-                flash("Instructions have to be a .txt file")
+               # else:
+                #    flash("Dictionary has to be a text file")
+            #else:
+             #   flash("Instructions have to be a .txt file")
         else:
             flash("Model has to be a .pickle file")
 
@@ -98,6 +99,11 @@ def view_model(name):
         text_data[i] = text_data[i].strip().decode("utf-8")
         new_lines.append(text_data[i].split(":"))
     
+    just_names = []
+    for i in new_lines:
+        just_names.append(i[0])
+    print(f"just names: {just_names}")
+    
     my_dict = {}
     for n in new_lines:
         my_dict[f"{n[0].lower()},{n[2]}"] = int(n[1])
@@ -116,7 +122,16 @@ def view_model(name):
             try:
                 inputvalue[i][0] = int(inputvalue[i][0])
             except:
-                inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
+                try:
+                    inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
+                except:
+                    try:
+                        closest_match = difflib.get_close_matches(inputvalue[i][0], just_names)[0]
+                        flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
+                        should_predict = False
+                    except:
+                        flash(f"We could not predict the result, mabye you have a spelling mistake when typing {inputvalue[i][0]} or the creator of the model hasnt thought of your input")
+                        should_predict = False
 
         print(inputvalue)
         new_input_value = []

@@ -71,4 +71,7 @@ hr.rounded {
     border-top: 8px solid lawngreen;
     width: 100%;
   }
-
+h6 {
+    color: red;
+    font-family: "Lucida Console", "Courier New", "monospace";
+}

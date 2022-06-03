@@ -5,7 +5,7 @@
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         {% for message in messages %}
-            <h5>{{ message }}</h5>
+            <h6>{{ message }}</h6>
         {% endfor %}
     {% endif %}
 {% endwith %}
@@ -27,7 +27,7 @@
         <label for="mround">Round Model Prediction?</label>
         <p><input type="checkbox", name="mround"></p>
         <label>Upload Model Pickle File*</label>
-        <p><input type="file", name="model", required> </p>
+        <p><input type="file", name="model", accept=".pickle" required> </p>
         <label>Upload Instruction Text File</label>
         <p><input type="file", name="minstruct", accept=".txt"></p>
         <label>Upload Dictionary for Catagorical parameters</label>

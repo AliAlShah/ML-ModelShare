@@ -3,7 +3,7 @@
 
 {% block content %}
     {% for item in values %}
-        <p>Name: {{item.filename}}</p>
+        <a href={{ url_for('view_model', name=item.filename) }}>Name: {{item.filename}}</a>
         <p>Description: {{item.filedescription}}</p>
         <p>Round: {{item.isround}}</p>
         <p>N: {{item.numberofparameters}}</p>

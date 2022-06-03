@@ -42,45 +42,30 @@ def home():
         description = request.form["mdescription"]
         data = request.files["model"]
         instructions = request.files["minstruct"]
-        isround = request.form["mround"]
+        try:
+            isround = request.form["mround"]
+        except:
+            isround = "off"
         dictionary = request.files["mdictionary"]
         parameterorder = request.form["mparameterorder"]
 
-        instructionsfilename = instructions.filename
-        new_instruct = instructionsfilename.split(".")
-        
-        dictionaryfilename = dictionary.filename
-        new_dictionary = dictionaryfilename.split(".")
-
         nparameters = len(parameterorder.split(","))
 
-        filename = data.filename
-        new_data = filename.split(".")
-        if new_data[1] == "pickle":
-            #if new_instruct[1] == "txt":
-                #if new_dictionary[1] == "txt":
-
-                    if models.query.filter_by(filename=name).count() > 0:
-                        flash("This name has already been used!", "warning")
-                    else:
-                        model = models(
-                            filename=name,
-                             filedescription=description,
-                              data=data.read(),
-                               instructions=instructions.read(),
-                                isround=isround,
-                                 dictionary=dictionary.read(),
-                                  parameterorder=parameterorder,
-                                   numberofparameters=nparameters)
-                        db.session.add(model)
-                        db.session.commit()
-                        return redirect(url_for("view_model", name=name))
-               # else:
-                #    flash("Dictionary has to be a text file")
-            #else:
-             #   flash("Instructions have to be a .txt file")
+        if models.query.filter_by(filename=name).count() > 0:
+            flash("This name has already been used!", "warning")
         else:
-            flash("Model has to be a .pickle file")
+            model = models(
+                filename=name,
+                    filedescription=description,
+                    data=data.read(),
+                    instructions=instructions.read(),
+                    isround=isround,
+                        dictionary=dictionary.read(),
+                        parameterorder=parameterorder,
+                        numberofparameters=nparameters)
+            db.session.add(model)
+            db.session.commit()
+            return redirect(url_for("view_model", name=name))
 
             
     return render_template('index.html')
@@ -126,7 +111,8 @@ def view_model(name):
                     inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
                 except:
                     try:
-                        closest_match = difflib.get_close_matches(inputvalue[i][0], just_names)[0]
+                        print(f"input value [i][0]= {inputvalue[i][0]}")
+                        closest_match = difflib.get_close_matches(inputvalue[i][0], just_names, n=10, cutoff=0.5)
                         flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
                         should_predict = False
                     except:

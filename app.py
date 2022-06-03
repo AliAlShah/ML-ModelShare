@@ -149,6 +149,8 @@ def search():
         searched_name = request.form["searchedname"]
         if models.query.filter_by(filename=searched_name).count() > 0:
             return redirect(url_for("view_model", name=searched_name))
+        else:
+            flash("No Models found with that name")
     return render_template("search.html")
 
 @app.route("/download/<instructname>")

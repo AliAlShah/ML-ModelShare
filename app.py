@@ -86,13 +86,27 @@ def view_model(name):
     
     just_names = []
     for i in new_lines:
-        just_names.append(i[0])
+        just_names.append(f"{i[0]},{i[2]}".split(","))
     print(f"just names: {just_names}")
     
+    unique_parameter_nums = ()
+    x_list = []
+    for i in just_names:
+        x_list.append(int(i[1]))
+
+    unique_parameter_nums = set(x_list)
+    print(f"unique: {unique_parameter_nums}")
+
+    item_parameter_dict = {}
+    
+    for u in unique_parameter_nums:
+        item_parameter_dict[u] = [x[0] for x in just_names if int(x[1]) == u]
+
+    print(item_parameter_dict)
+
     my_dict = {}
     for n in new_lines:
         my_dict[f"{n[0].lower()},{n[2]}"] = int(n[1])
-    print(my_dict)
     
     if request.method == "POST":
         inputvalue = []
@@ -112,7 +126,7 @@ def view_model(name):
                 except:
                     try:
                         print(f"input value [i][0]= {inputvalue[i][0]}")
-                        closest_match = difflib.get_close_matches(inputvalue[i][0], just_names, n=10, cutoff=0.5)
+                        closest_match = difflib.get_close_matches(inputvalue[i][0], item_parameter_dict[int(inputvalue[1])], n=10, cutoff=0.5)
                         flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
                         should_predict = False
                     except:

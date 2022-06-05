@@ -68,8 +68,9 @@ a {
 }
 
 hr.rounded {
-    border-top: 8px solid lawngreen;
+    border-top: 4px solid lawngreen;
     width: 100%;
+    height: 0.1%;
   }
 h6 {
     color: red;

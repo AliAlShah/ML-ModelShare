@@ -56,13 +56,13 @@ def home():
         else:
             model = models(
                 filename=name,
-                    filedescription=description,
-                    data=data.read(),
-                    instructions=instructions.read(),
-                    isround=isround,
-                        dictionary=dictionary.read(),
-                        parameterorder=parameterorder,
-                        numberofparameters=nparameters)
+                filedescription=description,
+                data=data.read(),
+                instructions=instructions.read(),
+                isround=isround,
+                dictionary=dictionary.read(),
+                parameterorder=parameterorder,
+                numberofparameters=nparameters)
             db.session.add(model)
             db.session.commit()
             return redirect(url_for("view_model", name=name))
@@ -77,8 +77,7 @@ def view():
 @app.route("/<name>", methods=["POST", "GET"])
 def view_model(name):
     mymodel = models.query.filter_by(filename=name).first()
-
-    text_data = list(BytesIO(mymodel.dictionary).readlines())
+    text_data = BytesIO(mymodel.dictionary).readlines()
     new_lines = []
     for i in range(0, len(text_data)):
         text_data[i] = text_data[i].strip().decode("utf-8")
@@ -87,26 +86,10 @@ def view_model(name):
     just_names = []
     for i in new_lines:
         just_names.append(f"{i[0]},{i[2]}".split(","))
-    print(f"just names: {just_names}")
-    
-    unique_parameter_nums = ()
-    x_list = []
-    for i in just_names:
-        x_list.append(int(i[1]))
-
-    unique_parameter_nums = set(x_list)
-    print(f"unique: {unique_parameter_nums}")
-
-    item_parameter_dict = {}
-    
-    for u in unique_parameter_nums:
-        item_parameter_dict[u] = [x[0] for x in just_names if int(x[1]) == u]
-
-    print(item_parameter_dict)
 
     my_dict = {}
     for n in new_lines:
-        my_dict[f"{n[0].lower()},{n[2]}"] = int(n[1])
+        my_dict[f"{n[0].lower()},{n[2]}"] = n[1]
     
     if request.method == "POST":
         inputvalue = []
@@ -114,7 +97,6 @@ def view_model(name):
             form_name = f"{str(i)},"
             inputvalue.append(f"{request.form[form_name].lower()},{i}".split(","))
         
-        print(inputvalue)
         should_predict = True
 
         for i in range(0, len(inputvalue)):
@@ -125,25 +107,24 @@ def view_model(name):
                     inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
                 except:
                     try:
-                        print(f"input value [i][0]= {inputvalue[i][0]}")
-                        closest_match = difflib.get_close_matches(inputvalue[i][0], item_parameter_dict[int(inputvalue[1])], n=10, cutoff=0.5)
+                        print(f"input value : {inputvalue[i]}")
+                        wanted_list = [x[0].lower() for x in just_names if x[1] == inputvalue[i][1]]
+                        print(f"wanted list: {wanted_list}")
+                        closest_match = difflib.get_close_matches(inputvalue[i][0], wanted_list, n=3, cutoff=0.5)
                         flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
                         should_predict = False
                     except:
                         flash(f"We could not predict the result, mabye you have a spelling mistake when typing {inputvalue[i][0]} or the creator of the model hasnt thought of your input")
                         should_predict = False
 
-        print(inputvalue)
         new_input_value = []
         for i in inputvalue:
             new_input_value.append(i[0])       
-        print(new_input_value)
 
         x = BytesIO(mymodel.data)
         m = pickle.load(x)
         prediction = ""
 
-        print(should_predict)
         if should_predict ==  True:
             try:
                 prediction = m.predict([new_input_value])
@@ -156,6 +137,7 @@ def view_model(name):
             flash(f"Prediction: {str(prediction)}")
         
     return render_template("viewmodel.html", model=mymodel, parameters=mymodel.parameterorder.split(","), l=mymodel.numberofparameters)
+
 
 @app.route("/search", methods=["POST", "GET"])
 def search():
@@ -174,5 +156,6 @@ def download_instruct(instructname):
 
 
 if __name__ == "__main__":
+    db.init_app(app)
     db.create_all()
     app.run(debug=True)

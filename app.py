@@ -48,6 +48,7 @@ def home():
             isround = "off"
         dictionary = request.files["mdictionary"]
         parameterorder = request.form["mparameterorder"]
+        parameterorder = parameterorder.replace(" ", "")
 
         nparameters = len(parameterorder.split(","))
 

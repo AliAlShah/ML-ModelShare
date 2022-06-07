@@ -105,25 +105,28 @@ def view_model(name):
                 inputvalue[i][0] = int(inputvalue[i][0])
             except:
                 try:
-                    inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
+                    inputvalue[i][0] = float(inputvalue[i][0])
                 except:
                     try:
-                        print(f"input value : {inputvalue[i]}")
-                        wanted_list = [x[0].lower() for x in just_names if x[1] == inputvalue[i][1]]
-                        print(f"wanted list: {wanted_list}")
-                        closest_match = difflib.get_close_matches(inputvalue[i][0], wanted_list, n=3, cutoff=0.5)
-                        
-                        if len(closest_match) > 0:
-                            flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
-
-                        else:
-                            flash(f"We could not predict the result, mabey you have a spelling mistake when typing {inputvalue[i][0]} in input box number: {inputvalue[i][1]}, or the creator of the model hasnt thought of your input")
-
-                        should_predict = False
-
+                        inputvalue[i][0] = int(my_dict[",".join(inputvalue[i])])
                     except:
-                        flash(f"We could not predict the result, mabey you have a spelling mistake when typing {inputvalue[i][0]} in input box number: {inputvalue[i][1]}, or the creator of the model hasnt thought of your input")
-                        should_predict = False
+                        try:
+                            print(f"input value : {inputvalue[i]}")
+                            wanted_list = [x[0].lower() for x in just_names if x[1] == inputvalue[i][1]]
+                            print(f"wanted list: {wanted_list}")
+                            closest_match = difflib.get_close_matches(inputvalue[i][0], wanted_list, n=3, cutoff=0.5)
+                            
+                            if len(closest_match) > 0:
+                                flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
+
+                            else:
+                                flash(f"We could not predict the result, mabey you have a spelling mistake when typing {inputvalue[i][0]} in input box number: {inputvalue[i][1]}, or the creator of the model hasnt thought of your input")
+
+                            should_predict = False
+
+                        except:
+                            flash(f"We could not predict the result, mabey you have a spelling mistake when typing {inputvalue[i][0]} in input box number: {inputvalue[i][1]}, or the creator of the model hasnt thought of your input")
+                            should_predict = False
 
         new_input_value = []
         for i in inputvalue:

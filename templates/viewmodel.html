@@ -20,7 +20,7 @@
         <ol>
             
             {% for i in range(0, l) %}
-                <p><input type="text", name={{i}}, placeholder={{parameters[i]}}, size="150", required/></p>
+                <p><input type="text", name={{i}}, placeholder={{i}}.{{parameters[i]}} size="150", required/></p>
                 
             {% endfor %}
         </ol> 

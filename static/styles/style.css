@@ -76,3 +76,7 @@ h6 {
     color: red;
     font-family: "Lucida Console", "Courier New", "monospace";
 }
+li {
+    color: grey;
+    font-family: "Lucida Console", "Courier New", "monospace";
+}

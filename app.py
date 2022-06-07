@@ -111,10 +111,17 @@ def view_model(name):
                         wanted_list = [x[0].lower() for x in just_names if x[1] == inputvalue[i][1]]
                         print(f"wanted list: {wanted_list}")
                         closest_match = difflib.get_close_matches(inputvalue[i][0], wanted_list, n=3, cutoff=0.5)
-                        flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
+                        
+                        if len(closest_match) > 0:
+                            flash(f"We could not predict the result, you typed {inputvalue[i][0]} did you mean: {closest_match}")
+
+                        else:
+                            flash(f"We could not predict the result, mabey you have a spelling mistake when typing {inputvalue[i][0]} in input box number: {inputvalue[i][1]}, or the creator of the model hasnt thought of your input")
+
                         should_predict = False
+
                     except:
-                        flash(f"We could not predict the result, mabye you have a spelling mistake when typing {inputvalue[i][0]} or the creator of the model hasnt thought of your input")
+                        flash(f"We could not predict the result, mabey you have a spelling mistake when typing {inputvalue[i][0]} in input box number: {inputvalue[i][1]}, or the creator of the model hasnt thought of your input")
                         should_predict = False
 
         new_input_value = []
@@ -153,6 +160,10 @@ def search():
 def download_instruct(instructname):
     mymodel = models.query.filter_by(filename=instructname).first()
     return send_file(BytesIO(mymodel.instructions), attachment_filename="openFileInNotepad")
+
+@app.route("/howto")
+def howto():
+    return render_template("howto.html")
 
 
 if __name__ == "__main__":

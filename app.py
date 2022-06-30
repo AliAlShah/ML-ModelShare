@@ -15,8 +15,8 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 load_dotenv()
-DATABSEURL = os.getenv("DATABASEURL")
-print(DATABSEURL)
+DATABASEURI = os.getenv("DATABASEURL")
+print(DATABASEURI)
 
 class models(db.Model):
     _id = db.Column("id", db.Integer, primary_key=True)

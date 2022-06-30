@@ -1,10 +1,11 @@
 from flask import Flask, flash, redirect, session, url_for, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from dotenv import load_dotenv
 from io import BytesIO
 import difflib
 import pickle
-
+import os
 
 app = Flask(__name__)
 app.secret_key = "Im The Best"
@@ -12,6 +13,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///models.sqlite3'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+load_dotenv()
+DATABSEURL = os.getenv("DATABASEURL")
+print(DATABSEURL)
 
 class models(db.Model):
     _id = db.Column("id", db.Integer, primary_key=True)

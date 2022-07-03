@@ -9,14 +9,13 @@ import os
 
 app = Flask(__name__)
 app.secret_key = "Im The Best"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///models.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASEURL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 load_dotenv()
-DATABASEURI = os.getenv("DATABASEURL")
-print(DATABASEURI)
+print(os.getenv("DATABASEURL"))
 
 class models(db.Model):
     _id = db.Column("id", db.Integer, primary_key=True)

@@ -1,15 +1,13 @@
 from flask import Flask, flash, redirect, session, url_for, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from dotenv import load_dotenv
 from io import BytesIO
 import difflib
 import pickle
-import os
 
 app = Flask(__name__)
 app.secret_key = "Im The Best"
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://hmnnapyknlmwzg:85e545ccbae5247376329fd8d4412dab30a6d9796c00230abeb488bd2bfb6529@ec2-44-198-82-71.compute-1.amazonaws.com:5432/d3lrki06atuot9"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://hmnnapyknlmwzg:85e545ccbae5247376329fd8d4412dab30a6d9796c00230abeb488bd2bfb6529@ec2-44-198-82-71.compute-1.amazonaws.com:5432/d3lrki06atuot9'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

@@ -9,7 +9,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = "Im The Best"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASEURL")
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://hmnnapyknlmwzg:85e545ccbae5247376329fd8d4412dab30a6d9796c00230abeb488bd2bfb6529@ec2-44-198-82-71.compute-1.amazonaws.com:5432/d3lrki06atuot9"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

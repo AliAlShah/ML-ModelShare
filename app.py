@@ -1,19 +1,18 @@
 from flask import Flask, flash, redirect, session, url_for, render_template, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from dotenv import load_dotenv
 from io import BytesIO
 import difflib
 import pickle
 import os
 
 app = Flask(__name__)
-load_dotenv()
 app.config["SECRET_KEY"] = "Im the best"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 #app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 
 
 class models(db.Model):

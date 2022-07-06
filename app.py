@@ -24,7 +24,7 @@ class models(db.Model):
     instructions = db.Column(db.LargeBinary)
     isround = db.Column(db.String(50))
     dictionary = db.Column(db.LargeBinary)
-    parameterorder = db.Column(db.String(50))
+    parameterorder = db.Column(db.String(200))
     numberofparameters = db.Column(db.Integer())
 
     def __init__(self, filename, filedescription, data, instructions, isround, dictionary, parameterorder, numberofparameters):
